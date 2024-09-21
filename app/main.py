@@ -1186,7 +1186,11 @@ def humanize_datetime(dt):
 def local_datetime(dt):
     bangkok = timezone('Asia/Bangkok')
     datetime_format = '%x'
-    return dt.astimezone(bangkok).strftime(datetime_format)
+    try:
+        dt = dt.astimezone(bangkok).strftime(datetime_format)
+    except AttributeError:
+        return None
+    return dt
 
 
 @app.template_filter("sorttest")
