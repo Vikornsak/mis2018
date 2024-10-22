@@ -379,10 +379,11 @@ def get_procurement_data():
     try:
         column = getattr(ProcurementDetail, col_name)
     except AttributeError:
-        column = getattr(ProcurementDetail, 'received_date')
+        column = ProcurementDetail.received_date.desc()
 
     if direction == 'desc':
         column = column.desc()
+
     query = query.order_by(column)
     start = request.args.get('start', type=int)
     length = request.args.get('length', type=int)
@@ -1090,7 +1091,7 @@ def get_events():
         cal_end = parser.isoparse(cal_end)
     all_events = []
     for event in ProcurementBorrowDetail.query.filter(ProcurementBorrowDetail.start_date.between(cal_start, cal_end )):
-        print(event)
+
         start = event.start_date
         end = event.end_date
         borrower = event.borrower
