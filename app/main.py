@@ -1693,9 +1693,9 @@ def save_budget_years(budget_years):
         json.dump(budget_years, file)
 
 @dbutils.command('run-files-to-cloud')
-@click.option('--budget_year', required=True, type=str, help="Budget year for filtering procurement items")
-def run_job_files_to_cloud(budget_year):
-
+#@click.option('--budget_year', required=True, type=str, help="Budget year for filtering procurement items")
+def run_job_files_to_cloud():
+    budget_year = "2567"
     budget_years = load_budget_years()
 
     if budget_year not in budget_years:
@@ -1732,7 +1732,7 @@ def run_job_files_to_cloud(budget_year):
 
 
 
-
+#r  heroku run "flask run-files-to-cloud --budget_year "2525"" -a mumtmis-test-only
 # from collections import defaultdict, namedtuple
 # from flask_wtf.csrf import generate_csrf
 # import gspread
@@ -1806,4 +1806,4 @@ def run_job_files_to_cloud(budget_year):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000, host="0.0.0.0")
+    app.run(debug=True, port=5000, host="0.0.0.0")

@@ -225,6 +225,10 @@ def customer_index():
             flash("{} {}".format(er, form.errors[er]), 'danger')
     return render_template('academic_services/customer_index.html', form=form, labs=labs)
 
+@academic_services.route('/registration-success')
+def registration_success():
+    return render_template('academic_services/registration_success.html')  # ไฟล์ HTML อยู่ในโฟลเดอร์ templates
+
 
 @academic_services.route('/customer/lab/index')
 def lab_index():
@@ -264,18 +268,28 @@ def create_customer_account(customer_id=None):
         if form.confirm_pdpa.data:
             db.session.add(account)
             db.session.commit()
-            customer = ServiceCustomerInfo(account_id=account.id)
-            db.session.add(customer)
-            db.session.commit()
+            # customer = ServiceCustomerInfo(account_id=account.id)
+            # db.session.add(customer)
+            # db.session.commit()
             serializer = TimedJSONWebSignatureSerializer(app.config.get('SECRET_KEY'))
             token = serializer.dumps({'email': form.email.data})
             scheme = 'http' if current_app.debug else 'https'
             url = url_for('academic_services.verify_email', token=token, _external=True, _scheme=scheme)
-            message = 'Click the link below to confirm.' \
-                        ' กรุณาคลิกที่ลิงค์เพื่อทำการยืนยันการสมัครบัญชีระบบ MUMT-MIS\n\n{}'.format(url)
-            send_mail([form.email.data], title='ยืนยันการสมัครบัญชีระบบ MUMT-MIS', message=message)
+
+            message = (
+                'กรุณาคลิกที่ลิงก์ด้านล่างเพื่อยืนยันการสมัครบัญชีผู้ใช้งานในระบบงานบริการตรวจวิเคราะห์\n'
+                'Please click the link below to confirm your account registration for the Analytical Services System.\n\n'
+                '{}'.format(url)
+            )
+            send_mail(
+                [form.email.data],
+                title='ยืนยันการสมัครบัญชี งานบริการตรวจวิเคราะห์ / Account Registration Confirmation',
+                message=message
+            )
+
             flash('โปรดตรวจสอบอีเมลของท่านผ่านภายใน 20 นาที', 'success')
             return redirect(url_for('academic_services.customer_index'))
+
         else:
             flash('กรุณาคลิกยืนยันการให้เก็บข้อมูลส่วนบุคคลตามนโยบาย', 'danger')
             return redirect(url_for('academic_services.create_customer_account', form=form, customer_id=customer_id,
